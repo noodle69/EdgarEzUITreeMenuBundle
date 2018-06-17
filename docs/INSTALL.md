@@ -27,6 +27,13 @@ public function registerBundles()
 }
 ```
 
+## Assets/Assetic
+
+```bash
+php bin/console assets:install --symlink web
+php bin/console assetic:dump --env=prod
+```
+
 ## Add routing
 
 Add to your global configuration app/config/routing.yml
