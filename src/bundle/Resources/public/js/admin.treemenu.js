@@ -1,4 +1,4 @@
-$(function() {
+;(function ($, window, document, undefined) {
     let treeMenuSideBarInit = false;
     const btnTreeMenu = document.querySelectorAll('.btn--tree-browse');
 
@@ -102,4 +102,4 @@ $(function() {
     };
 
     btnTreeMenu.forEach(btnTreeMenu => btnTreeMenu.addEventListener('click', btnTreeMenuTrigger, false));
-});
+})(jQuery, window, document);
