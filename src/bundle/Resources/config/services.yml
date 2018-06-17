@@ -1,0 +1,14 @@
+imports:
+    - { resource: controllers.yml }
+    - { resource: components.yml }
+
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+
+    Edgar\EzUITreeMenuBundle\EventListener\ConfigureMenuListener:
+        public: true
+        tags:
+          - { name: kernel.event_listener, event: ezplatform_admin_ui.menu_configure.content_sidebar_left, method: onMenuConfigure }

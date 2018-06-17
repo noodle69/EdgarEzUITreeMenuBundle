@@ -1,0 +1,7 @@
+{% set locationId = ezpublish.requestStack.parentRequest.attributes.get('locationId') %}
+<div id="treemenu-sidebar" class="col-sm-2 bg-dark pt-4 ez-side-menu"
+     data-action="{{ path('edgar.uitreemenu.init', {'locationId': locationId}) }}"
+     data-locationid="{{ locationId }}"
+     style="display:none;">
+    <div id="treemenu-view"></div>
+</div>

@@ -1,0 +1,14 @@
+services:
+    Edgar\EzUITreeMenu\Component\FooterTwigComponent:
+        parent: EzSystems\EzPlatformAdminUi\Component\TwigComponent
+        arguments:
+            $template: 'EdgarEzUITreeMenuBundle:component:treemenu_footer.html.twig'
+        tags:
+            - { name: ezplatform.admin_ui.component, group: 'script-body' }
+
+    Edgar\EzUITreeMenu\Component\HeadTwigComponent:
+        parent: EzSystems\EzPlatformAdminUi\Component\TwigComponent
+        arguments:
+            $template: 'EdgarEzUITreeMenuBundle:component:treemenu_head.html.twig'
+        tags:
+            - { name: ezplatform.admin_ui.component, group: 'stylesheet-head' }

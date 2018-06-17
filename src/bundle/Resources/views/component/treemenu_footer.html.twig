@@ -1,0 +1,8 @@
+{{ render(controller('EdgarEzUITreeMenuBundle:UITreeMenu:sidebar', {})) }}
+
+{% javascripts
+    'bundles/edgarezuitreemenu/js/bootstrap-treeview.js'
+    'bundles/edgarezuitreemenu/js/admin.treemenu.js'
+%}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+{% endjavascripts %}

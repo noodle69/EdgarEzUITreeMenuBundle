@@ -1,0 +1,6 @@
+edgar.uitreemenu.init:
+    path: /init/{locationId}
+    methods: [ "GET" ]
+    defaults:
+        _controller: 'EdgarEzUITreeMenuBundle:UITreeMenu:init'
+
