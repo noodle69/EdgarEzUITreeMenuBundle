@@ -48,42 +48,46 @@
             .catch(error => console.log('error:treemenu', error));
     };
 
+    const requestChildren = function(action, par) {
+        const request = new Request(action, {
+            method: 'GET',
+            mode: 'same-origin',
+            credentials: 'same-origin'
+        });
+
+        fetch(request)
+            .then(handleRequestResponse)
+            .then(function(json) {
+                $.each(json, function(i, node) {
+                    $('#treemenu-view').jstree("create_node", par, node, 'last', false, false);
+                });
+            })
+            .catch(error => console.log('error:treemenu', error));
+    };
+
     const initTreeView = function(json) {
         const treeMenuSideBar = document.querySelector('#treemenu-sidebar');
         const treeMenuLocationId = treeMenuSideBar.dataset.locationid;
         let automaticallyExpand = false;
 
-        $('#treemenu-view').treeview({
-            levels: 1,
-            color: "#fff",
-            backColor: "#555",
-            selectedColor: "#fff",
-            selectedBackColor: "#555",
-            onhoverColor: "#555",
-            showBorder: false,
-            enableLinks: true,
-            showTags: true,
-            data: json,
-            onNodeExpanded: function (event, data) {
-                if (!automaticallyExpand) {
-                    treeMenuSideBar.dataset.locationid = data.locationId;
-                    requestData(data.action);
-                }
+        $('#treemenu-view').jstree({
+            'core' : {
+                'multiple': false,
+                'themes' : {
+                    'dots' : false
+                },
+                'check_callback': true,
+                'plugins:': ['types'],
+                'data' : json
             }
+        }).on('open_node.jstree', function (e, data) {
+            if (data.node.children_d.length === 1 && !parseInt(data.node.children_d[0])) {
+                $('#treemenu-view').jstree("delete_node", data.node.children_d[0]);
+                requestChildren(data.node.a_attr.children, data.node);
+            }
+        }).on('select_node.jstree', function (e, data) {
+            window.location.href = data.node.a_attr.href;
         });
-
-        const locationNodes = $('#treemenu-view').treeview('findNodes', ['^' + treeMenuLocationId + '$', 'g', 'locationId']);
-        if (locationNodes.length > 0) {
-            const pathString = locationNodes[0]['pathString'].split('/');
-            $.each(pathString, function expand(id, locationId) {
-                const locationNodes = $('#treemenu-view').treeview('findNodes', ['^' + locationId + '$', 'g', 'locationId']);
-                if (locationNodes.length > 0) {
-                    automaticallyExpand = true;
-                    $('#treemenu-view').treeview('expandNode', [locationNodes[0]['nodeId']]);
-                    automaticallyExpand = false;
-                }
-            });
-        }
     };
 
     const getClosest = function (elem, selector) {

@@ -4,24 +4,24 @@ namespace Edgar\EzUITreeMenu\Data;
 
 class Node
 {
+    /** @var int */
+    public $id;
+
     /** @var string */
     public $text;
 
-    /** @var string */
-    public $href;
+    /** @var array */
+    public $a_attr;
 
     /** @var array */
-    public $nodes;
-
-    /** @var int */
-    public $locationId;
-
-    /** @var string */
-    public $pathString;
-
-    /** @var string */
-    public $action;
+    public $state;
 
     /** @var array */
-    public $tags;
+    public $children;
+
+    /** @var string */
+    public $type;
+
+    /** @var ?string */
+    public $icon = null;
 }

@@ -4,3 +4,8 @@ edgar.uitreemenu.init:
     defaults:
         _controller: 'EdgarEzUITreeMenuBundle:UITreeMenu:init'
 
+edgar.uitreemenu.children:
+    path: /children/{locationId}
+    methods: [ "GET" ]
+    defaults:
+        _controller: 'EdgarEzUITreeMenuBundle:UITreeMenu:children'

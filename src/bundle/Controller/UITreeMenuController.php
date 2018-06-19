@@ -3,6 +3,7 @@
 namespace Edgar\EzUITreeMenuBundle\Controller;
 
 use Edgar\EzUITreeMenu\Data\Node;
+use eZ\Publish\API\Repository\ContentTypeService;
 use eZ\Publish\API\Repository\LocationService;
 use eZ\Publish\API\Repository\Values\Content\Location;
 use eZ\Publish\Core\Base\Exceptions\InvalidArgumentException;
@@ -11,29 +12,59 @@ use EzSystems\EzPlatformAdminUiBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\RouterInterface;
 
 class UITreeMenuController extends Controller
 {
     /** @var LocationService  */
     protected $locationService;
 
+    /** @var ContentTypeService  */
+    protected $contentTypeService;
+
     /** @var UrlAliasRouter */
+    private $urlRouter;
+
+    /** @var RouterInterface  */
     private $router;
 
+    /**
+     * UITreeMenuController constructor.
+     *
+     * @param LocationService $locationService
+     * @param ContentTypeService $contentTypeService
+     * @param UrlAliasRouter  $urlRouter
+     * @param RouterInterface $router
+     */
     public function __construct(
         LocationService $locationService,
-        UrlAliasRouter $router
+        ContentTypeService $contentTypeService,
+        UrlAliasRouter $urlRouter,
+        RouterInterface $router
     ) {
         $this->locationService = $locationService;
+        $this->contentTypeService = $contentTypeService;
+        $this->urlRouter = $urlRouter;
         $this->router = $router;
     }
 
+    /**
+     * @param Request $request
+     * @return Response
+     */
     public function sidebarAction(Request $request): Response
     {
         return $this->render('@EdgarEzUITreeMenu/sidebar.html.twig', [
         ]);
     }
 
+    /**
+     * @param Location $location
+     * @return Response
+     * @throws InvalidArgumentException
+     * @throws \eZ\Publish\API\Repository\Exceptions\NotFoundException
+     * @throws \eZ\Publish\API\Repository\Exceptions\UnauthorizedException
+     */
     public function initAction(Location $location): Response
     {
         $response = new JsonResponse();
@@ -54,21 +85,21 @@ class UITreeMenuController extends Controller
             }
 
             $parentLocation = $this->locationService->loadLocation($locationId);
-            $ps = trim($parentLocation->pathString, '/');
             $nodeData = new Node();
-            $nodeData->locationId = $parentLocation->id;
+            $nodeData->id = $parentLocation->id;
             $nodeData->text = $parentLocation->contentInfo->name;
-            $nodeData->href = $this->router->generate(URLAliasRouter::URL_ALIAS_ROUTE_NAME, ['locationId' => $parentLocation->id]);
-            $nodeData->pathString = $ps;
-            $nodeData->action = $this->generateUrl('edgar.uitreemenu.init', ['locationId' => $parentLocation->id]);
-            if ($count = $this->locationService->getLocationChildCount($parentLocation)) {
-                $nodeData->tags = [$count];
-            }
+            $nodeData->type = $this->contentTypeService->loadContentType($parentLocation->contentInfo->contentTypeId)->identifier;
+            $nodeData->icon = 'ct-icon ct-' . $nodeData->type;
+            $nodeData->a_attr = [
+                'href' => $this->urlRouter->generate(URLAliasRouter::URL_ALIAS_ROUTE_NAME, ['locationId' => $parentLocation->id]),
+                'children' => $this->router->generate('edgar.uitreemenu.children', ['locationId' => $parentLocation->id]),
+            ];
+            $nodeData->state = ['opened' => true];
 
             if (!$parentData) {
-                $nodeData->nodes = $this->findNodes($parentLocation);
+                $nodeData->children = $this->findNodes($parentLocation);
             } else {
-                $nodeData->nodes = $this->findNodes($parentLocation, $parentData);
+                $nodeData->children = $this->findNodes($parentLocation, $parentData);
             }
 
             $parentData = $nodeData;
@@ -81,33 +112,50 @@ class UITreeMenuController extends Controller
         return $response;
     }
 
+    /**
+     * @param Location $location
+     * @return Response
+     */
+    public function childrenAction(Location $location): Response
+    {
+        $response = new JsonResponse();
+
+        $children = $this->findNodes($location);
+
+        $response->setData($children);
+
+        return $response;
+    }
+
+    /**
+     * @param Location  $location
+     * @param Node|null $node
+     * @return array|null
+     */
     protected function findNodes(Location $location, ?Node $node = null): ?array
     {
         $children = $this->locationService->loadLocationChildren($location);
         $nodes = [];
         foreach ($children->locations as $child) {
-            if ($node && $child->id == $node->locationId) {
+            if ($node && $child->id == $node->id) {
                 $nodes[] = $node;
                 continue;
             }
 
-            $ps = trim($child->pathString, '/');
-
             $childNode = new Node();
-            $childNode->locationId = $child->id;
+            $childNode->id = $child->id;
             $childNode->text = $child->contentInfo->name;
-            $childNode->href = $this->router->generate(URLAliasRouter::URL_ALIAS_ROUTE_NAME, ['locationId' => $child->id]);
-            $childNode->pathString = $ps;
-            $childNode->action = $this->generateUrl('edgar.uitreemenu.init', ['locationId' => $child->id]);
-            if ($count = $this->locationService->getLocationChildCount($child)) {
-                $childNode->tags = [$count];
-            }
+            $childNode->type = $this->contentTypeService->loadContentType($child->contentInfo->contentTypeId)->identifier;
+            $childNode->icon = 'ct-icon ct-' . $childNode->type;
+            $childNode->a_attr = [
+                'href' => $this->urlRouter->generate(URLAliasRouter::URL_ALIAS_ROUTE_NAME, ['locationId' => $child->id]),
+                'children' => $this->router->generate('edgar.uitreemenu.children', ['locationId' => $child->id]),
+            ];
 
             if ($this->locationService->getLocationChildCount($child)) {
                 $nodesTemp = new Node();
                 $nodesTemp->text = '...';
-                $nodesTemp->locationId = -1;
-                $childNode->nodes = [$nodesTemp];
+                $childNode->children = [$nodesTemp];
             }
 
             $nodes[] = $childNode;
@@ -119,5 +167,4 @@ class UITreeMenuController extends Controller
 
         return $nodes;
     }
-
 }
