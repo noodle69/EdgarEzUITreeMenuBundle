@@ -5,6 +5,7 @@
 }
 #treemenu-sidebar ul {
   -webkit-padding-start: 0;
+  -moz-padding-start: 0;
 }
 #treemenu-sidebar .jstree-node,
 #treemenu-sidebar .jstree-children,
