@@ -1,7 +1,10 @@
 /* jsTree default theme */
 #treemenu-sidebar {
-    overflow: auto;
-    font-size: 0.8125rem;
+  overflow: auto;
+  font-size: 0.8125rem;
+}
+#treemenu-sidebar ul {
+  -webkit-padding-start: 0;
 }
 #treemenu-sidebar .jstree-node,
 #treemenu-sidebar .jstree-children,
