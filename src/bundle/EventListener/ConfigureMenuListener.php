@@ -32,10 +32,8 @@ class ConfigureMenuListener implements TranslationContainerInterface
             [
                 'extras' => ['icon' => 'list'],
                 'attributes' => [
-                    'class' => 'btn--tree-browse',
-                    'data-starting-location-id' => $this->configResolver->getParameter(
-                        'universal_discovery_widget_module.default_location_id'
-                    ),
+                    'class' => 'ez-btn--extra-actions btn--tree-browse',
+                    'data-actions' => 'browse-tree',
                 ],
             ]
         );
