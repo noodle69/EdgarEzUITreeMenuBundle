@@ -1,0 +1,14 @@
+services:
+    ezplatform.udw.treemenu.panel.module.js:
+        parent: EzSystems\EzPlatformAdminUi\Component\ScriptComponent
+        arguments:
+            $src: '/bundles/edgarezuitreemenu/js/modules/TreeMenuPanel.module.js'
+        tags:
+            - { name: ezplatform.admin_ui.component, group: 'custom-admin-ui-modules' }
+
+    ezplatform.udw.add.tab.js:
+        parent: EzSystems\EzPlatformAdminUi\Component\ScriptComponent
+        arguments:
+            $src: '/bundles/edgarezuitreemenu/js/treemenu.tab.js'
+        tags:
+            - { name: ezplatform.admin_ui.component, group: 'custom-admin-ui-config' }

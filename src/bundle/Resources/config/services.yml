@@ -1,6 +1,7 @@
 imports:
     - { resource: controllers.yml }
     - { resource: components.yml }
+    - { resource: udw.yml }
 
 services:
     _defaults:
