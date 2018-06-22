@@ -32,7 +32,7 @@ class ConfigureMenuListener implements TranslationContainerInterface
             [
                 'extras' => ['icon' => 'list'],
                 'attributes' => [
-                    'class' => 'ez-btn--extra-actions btn--tree-browse',
+                    'class' => 'ez-btn--extra-actions-left btn--tree-browse',
                     'data-actions' => 'browse-tree',
                 ],
             ]

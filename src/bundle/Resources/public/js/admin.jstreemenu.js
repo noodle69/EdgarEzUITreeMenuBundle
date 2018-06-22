@@ -1,38 +1,4 @@
 ;(function ($, window, document, undefined) {
-    let treeMenuSideBarInit = false;
-    const btnTreeMenu = document.querySelectorAll('.btn--tree-browse');
-
-    const btnTreeMenuTrigger = (event) => {
-        const treeMenuSideBar = document.querySelector('#treemenu-sidebar');
-        if (treeMenuSideBar.style.display === 'none' && !treeMenuSideBarInit) {
-            treeMenuSideBarInit = true;
-            const contentSideBar = getClosest(event.target, '.ez-side-menu');
-            const contentDiv = contentSideBar.nextElementSibling;
-
-            contentSideBar.parentNode.insertBefore(treeMenuSideBar, contentSideBar.nextSibling);
-            treeMenuSideBar.style.display = 'block';
-            contentDiv.className = contentDiv.className.replace(/(?:^|\s)col-sm-10(?!\S)/g, 'col-sm-8');
-
-            const treeMenuAction = treeMenuSideBar.dataset.action;
-            requestData(treeMenuAction);
-        } else if (treeMenuSideBar.style.display === 'none' && treeMenuSideBarInit) {
-            const contentSideBar = getClosest(event.target, '.ez-side-menu');
-            const contentDiv = contentSideBar.nextElementSibling.nextElementSibling;
-
-            treeMenuSideBar.style.display = 'block';
-            contentDiv.className = contentDiv.className.replace(/(?:^|\s)col-sm-10(?!\S)/g, 'col-sm-8');
-
-            const treeMenuAction = treeMenuSideBar.dataset.action;
-            requestData(treeMenuAction);
-        } else if (treeMenuSideBar.style.display !== 'none') {
-            const contentSideBar = getClosest(event.target, '.ez-side-menu');
-            const contentDiv = contentSideBar.nextElementSibling.nextElementSibling;
-
-            treeMenuSideBar.style.display = 'none';
-            contentDiv.className = contentDiv.className.replace(/(?:^|\s)col-sm-8(?!\S)/g, 'col-sm-10');
-        }
-    };
-
     const requestData = function(action) {
         const request = new Request(action, {
             method: 'GET',
@@ -66,7 +32,7 @@
     };
 
     const initTreeView = function(json) {
-        const treeMenuSideBar = document.querySelector('#treemenu-sidebar');
+        const treeMenuSideBar = document.querySelector('#treemenu-sidebar-widget');
         const treeMenuLocationId = treeMenuSideBar.dataset.locationid;
         let automaticallyExpand = false;
 
@@ -105,5 +71,10 @@
         return response.json();
     };
 
-    btnTreeMenu.forEach(btnTreeMenu => btnTreeMenu.addEventListener('click', btnTreeMenuTrigger, false));
+    const treeMenuSideBar = document.querySelector('#treemenu-sidebar-widget');
+    if (treeMenuSideBar) {
+        const treeMenuAction = treeMenuSideBar.dataset.action;
+        requestData(treeMenuAction);
+    }
+
 })(jQuery, window, document);

@@ -1,9 +1,6 @@
 @import 'custom';
 
-$ez-color-dark: #e5e3e3;
-$ez-dark-ground-pale: #e5e3e3;
-$ez-dark-ground: #e5e3e3;
-$ez-color-dark: #e5e3e3;
+$ez-color-dark: #555;
 
 .ez-extra-actions-left {
     $block: '.ez-extra-actions-left';
@@ -22,7 +19,7 @@ $ez-color-dark: #e5e3e3;
         padding: 0 16px;
         line-height: 45px;
         background: $ez-white;
-        color: $ez-color-dark;
+        color: $ez-color-secondary;
         text-decoration: none;
         cursor: pointer;
         transition: all .2s $ez-admin-transition;
@@ -35,11 +32,11 @@ $ez-color-dark: #e5e3e3;
 
         &:hover,
         &:focus {
-            background: $ez-dark-ground-pale;
+            background: $ez-secondary-ground-pale;
         }
 
         &:active {
-            background: $ez-dark-ground;
+            background: $ez-secondary-ground;
             color: $ez-white;
         }
     }
@@ -89,12 +86,12 @@ $ez-color-dark: #e5e3e3;
 
             &:hover,
             &:focus {
-                background: $ez-dark-ground-pale;
+                background: $ez-secondary-ground-pale;
                 text-decoration: none;
             }
 
             &:active {
-                background: $ez-dark-ground;
+                background: $ez-secondary-ground;
                 color: $ez-white;
             }
 
@@ -151,11 +148,11 @@ $ez-color-dark: #e5e3e3;
 
             &:hover,
             &:focus {
-                background: $ez-dark-ground-pale;
+                background: $ez-secondary-ground-pale;
             }
 
             &:active {
-                background: $ez-dark-ground;
+                background: $ez-secondary-ground;
                 color: $ez-white;
             }
 
@@ -177,13 +174,13 @@ $ez-color-dark: #e5e3e3;
         }
     }
 
-    &::after {
+    &::before {
         content: '';
         position: absolute;
         height: 40px;
         width: 10px;
         top: 30px;
-        right: -6px;
+        left: -24px;
         transform: translate(100%, -50%);
         z-index: 0;
         background: $ez-color-dark;
@@ -191,13 +188,13 @@ $ez-color-dark: #e5e3e3;
 
 }
 
-.ez-extra-actions-container {
-    .ez-extra-actions {
+.ez-extra-actions-left-container {
+    .ez-extra-actions-left {
         position: absolute;
-        left: 0;
+        right: 0;
         z-index: 2;
         opacity: 1;
-        transform: translate(calc(-100% - 10px), 0) scaleX(1);
+        transform: translate(calc(106% - 10px), 0) scaleX(1);
         transform-origin: right center;
         transition: all .2s $ez-admin-transition;
 
