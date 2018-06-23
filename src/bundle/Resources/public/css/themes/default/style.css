@@ -1,8 +1,12 @@
 /* jsTree default theme */
 #treemenu-sidebar-widget {
   overflow: auto;
-  font-size: 0.8125rem;
+  font-size: 0.9375rem;
   white-space: nowrap;
+}
+#treemenu-sidebar-widget .ez-extra-actions-left__header {
+  font-weight: 700;
+  font-size: 1rem;
 }
 #treemenu-sidebar-widget ul {
   -webkit-padding-start: 0;

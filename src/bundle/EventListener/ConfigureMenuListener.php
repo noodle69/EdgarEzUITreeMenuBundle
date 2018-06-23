@@ -6,19 +6,11 @@ use eZ\Publish\Core\MVC\ConfigResolverInterface;
 use EzSystems\EzPlatformAdminUi\Menu\Event\ConfigureMenuEvent;
 use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Translation\TranslationContainerInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class ConfigureMenuListener implements TranslationContainerInterface
 {
-    /** @var ConfigResolverInterface  */
-    private $configResolver;
-
     const ITEM__BROWSE_TRE = 'sidebar_left__browse_tree';
-
-    public function __construct(
-        ConfigResolverInterface $configResolver
-    ) {
-        $this->configResolver = $configResolver;
-    }
 
     /**
      * @param ConfigureMenuEvent $event
