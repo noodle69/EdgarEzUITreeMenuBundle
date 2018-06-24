@@ -1,4 +1,6 @@
-{% set locationId = ezpublish.requestStack.parentRequest.attributes.get('locationId') %}
-<div id="ez-extra-actions-container-left" class="ez-extra-actions-left-container">
-    {% include '@EdgarEzUITreeMenu/content/widgets/content_browse_tree.html.twig' with {'locationId': locationId} only %}
-</div>
+{% if ezpublish.requestStack.parentRequest.attributes.has('locationId') %}
+    {% set locationId = ezpublish.requestStack.parentRequest.attributes.get('locationId') %}
+    <div id="ez-extra-actions-container-left" class="ez-extra-actions-left-container">
+        {% include '@EdgarEzUITreeMenu/content/widgets/content_browse_tree.html.twig' with {'locationId': locationId} only %}
+    </div>
+{% endif %}
