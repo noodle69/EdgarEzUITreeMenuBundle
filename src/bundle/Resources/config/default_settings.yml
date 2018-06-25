@@ -1,0 +1,3 @@
+parameters:
+    edgar_ez_ui_tree_menu.default.pagination_children: 25
+    edgar_ez_ui_tree_menu.default.exclude_content_types: ~

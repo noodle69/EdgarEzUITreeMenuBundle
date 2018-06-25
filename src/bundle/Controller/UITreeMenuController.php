@@ -5,7 +5,9 @@ namespace Edgar\EzUITreeMenuBundle\Controller;
 use Edgar\EzUITreeMenu\Data\Node;
 use eZ\Publish\API\Repository\ContentTypeService;
 use eZ\Publish\API\Repository\LocationService;
+use eZ\Publish\API\Repository\SearchService;
 use eZ\Publish\API\Repository\Values\Content\Location;
+use eZ\Publish\API\Repository\Values\Content\LocationQuery;
 use eZ\Publish\Core\Base\Exceptions\InvalidArgumentException;
 use eZ\Publish\Core\MVC\Symfony\Routing\UrlAliasRouter;
 use EzSystems\EzPlatformAdminUiBundle\Controller\Controller;
@@ -13,6 +15,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\RouterInterface;
+use eZ\Publish\API\Repository\Values\Content\Query\Criterion;
 
 class UITreeMenuController extends Controller
 {
@@ -22,30 +25,48 @@ class UITreeMenuController extends Controller
     /** @var ContentTypeService  */
     protected $contentTypeService;
 
+    /** @var SearchService  */
+    protected $searchService;
+
     /** @var UrlAliasRouter */
     private $urlRouter;
 
     /** @var RouterInterface  */
     private $router;
 
+    /** @var int  */
+    protected $paginationChildren;
+
+    /** @var array|null  */
+    protected $excludeContentTypes;
+
     /**
      * UITreeMenuController constructor.
      *
-     * @param LocationService $locationService
+     * @param LocationService    $locationService
      * @param ContentTypeService $contentTypeService
-     * @param UrlAliasRouter  $urlRouter
-     * @param RouterInterface $router
+     * @param SearchService      $searchService
+     * @param UrlAliasRouter     $urlRouter
+     * @param RouterInterface    $router
+     * @param int                $paginationChildren
+     * @param array|null         $excludeContentTypes
      */
     public function __construct(
         LocationService $locationService,
         ContentTypeService $contentTypeService,
+        SearchService $searchService,
         UrlAliasRouter $urlRouter,
-        RouterInterface $router
+        RouterInterface $router,
+        int $paginationChildren,
+        ?array $excludeContentTypes
     ) {
         $this->locationService = $locationService;
         $this->contentTypeService = $contentTypeService;
+        $this->searchService = $searchService;
         $this->urlRouter = $urlRouter;
         $this->router = $router;
+        $this->paginationChildren = $paginationChildren;
+        $this->excludeContentTypes = $excludeContentTypes;
     }
 
     /**
@@ -134,9 +155,9 @@ class UITreeMenuController extends Controller
      */
     protected function findNodes(Location $location, ?Node $node = null): ?array
     {
-        $children = $this->locationService->loadLocationChildren($location);
+        $children = $this->loadLocationChildren($location, 0, $this->paginationChildren);
         $nodes = [];
-        foreach ($children->locations as $child) {
+        foreach ($children as $child) {
             if ($node && $child->id == $node->id) {
                 $nodes[] = $node;
                 continue;
@@ -166,5 +187,46 @@ class UITreeMenuController extends Controller
         }
 
         return $nodes;
+    }
+
+    /**
+     * @param Location $location
+     * @param int      $offset
+     * @param int      $limit
+     * @return array
+     * @throws \eZ\Publish\API\Repository\Exceptions\NotImplementedException
+     */
+    public function loadLocationChildren(Location $location, $offset = 0, $limit = 25)
+    {
+        $filters = [new Criterion\ParentLocationId($location->id)];
+
+        if ($this->excludeContentTypes) {
+            $excludeContentTypesFilter = [];
+            foreach ($this->excludeContentTypes as $contentType) {
+                $excludeContentTypesFilter[] = new Criterion\LogicalNot(new Criterion\ContentTypeIdentifier($contentType));
+            }
+
+            $filters[] = new Criterion\LogicalAnd($excludeContentTypesFilter);
+        }
+
+        $query = new LocationQuery([
+            'filter' => new Criterion\LogicalAnd($filters),
+            'offset' => $offset,
+            'limit' => $limit,
+            'sortClauses' => $location->getSortClauses(),
+        ]);
+
+        $childLocations = [];
+        try {
+            $searchResult = $this->searchService->findLocations($query);
+        } catch (\eZ\Publish\API\Repository\Exceptions\InvalidArgumentException $e) {
+            return $childLocations;
+        }
+
+        foreach ($searchResult->searchHits as $searchHit) {
+            $childLocations[] = $searchHit->valueObject;
+        }
+
+        return $childLocations;
     }
 }

@@ -6,6 +6,9 @@ services:
 
     Edgar\EzUITreeMenuBundle\Controller\:
         resource: "../../Controller/*"
+        arguments:
+            $paginationChildren: '$pagination_children;edgar_ez_ui_tree_menu$'
+            $excludeContentTypes: '$exclude_content_types;edgar_ez_ui_tree_menu$'
         public: true
         tags: ['controller.service_arguments']
         calls:

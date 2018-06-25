@@ -2,6 +2,7 @@
 
 namespace Edgar\EzUITreeMenuBundle\DependencyInjection;
 
+use eZ\Bundle\EzPublishCoreBundle\DependencyInjection\Configuration\SiteAccessAware\ConfigurationProcessor;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
@@ -17,7 +18,15 @@ class EdgarEzUITreeMenuExtension extends Extension implements PrependExtensionIn
             new FileLocator(__DIR__ . '/../Resources/config')
         );
 
+        $loader->load('default_settings.yml');
         $loader->load('services.yml');
+
+        $configuration = $this->getConfiguration($configs, $container);
+        $config = $this->processConfiguration($configuration, $configs);
+
+        $processor = new ConfigurationProcessor($container, 'edgar_ez_ui_tree_menu');
+        $processor->mapSetting('pagination_children', $config);
+        $processor->mapSetting('exclude_content_types', $config);
     }
 
     public function prepend(ContainerBuilder $container)
