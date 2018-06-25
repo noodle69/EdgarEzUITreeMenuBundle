@@ -24,9 +24,15 @@
         fetch(request)
             .then(handleRequestResponse)
             .then(function(json) {
-                $.each(json, function(i, node) {
-                    $('#treemenu-view').jstree("create_node", par, node, 'last', false, false);
-                });
+                if (json.children.length) {
+                    $.each(json.children, function(i, node) {
+                        $('#treemenu-view').jstree("create_node", par, node, 'last', false, false);
+                    });
+
+                    if (json.next) {
+                        requestChildren(json.next, par);
+                    }
+                }
             })
             .catch(error => console.log('error:treemenu', error));
     };
@@ -34,7 +40,6 @@
     const initTreeView = function(json) {
         const treeMenuSideBar = document.querySelector('#treemenu-sidebar-widget');
         const treeMenuLocationId = treeMenuSideBar.dataset.locationid;
-        let automaticallyExpand = false;
 
         $('#treemenu-view').jstree({
             'core' : {

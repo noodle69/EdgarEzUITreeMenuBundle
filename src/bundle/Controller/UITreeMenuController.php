@@ -40,17 +40,6 @@ class UITreeMenuController extends Controller
     /** @var array|null  */
     protected $excludeContentTypes;
 
-    /**
-     * UITreeMenuController constructor.
-     *
-     * @param LocationService    $locationService
-     * @param ContentTypeService $contentTypeService
-     * @param SearchService      $searchService
-     * @param UrlAliasRouter     $urlRouter
-     * @param RouterInterface    $router
-     * @param int                $paginationChildren
-     * @param array|null         $excludeContentTypes
-     */
     public function __construct(
         LocationService $locationService,
         ContentTypeService $contentTypeService,
@@ -69,23 +58,12 @@ class UITreeMenuController extends Controller
         $this->excludeContentTypes = $excludeContentTypes;
     }
 
-    /**
-     * @param Request $request
-     * @return Response
-     */
     public function sidebarAction(Request $request): Response
     {
         return $this->render('@EdgarEzUITreeMenu/sidebar.html.twig', [
         ]);
     }
 
-    /**
-     * @param Location $location
-     * @return Response
-     * @throws InvalidArgumentException
-     * @throws \eZ\Publish\API\Repository\Exceptions\NotFoundException
-     * @throws \eZ\Publish\API\Repository\Exceptions\UnauthorizedException
-     */
     public function initAction(Location $location): Response
     {
         $response = new JsonResponse();
@@ -113,14 +91,14 @@ class UITreeMenuController extends Controller
             $nodeData->icon = 'ct-icon ct-' . $nodeData->type;
             $nodeData->a_attr = [
                 'href' => $this->urlRouter->generate(URLAliasRouter::URL_ALIAS_ROUTE_NAME, ['locationId' => $parentLocation->id]),
-                'children' => $this->router->generate('edgar.uitreemenu.children', ['locationId' => $parentLocation->id]),
+                'children' => $this->router->generate('edgar.uitreemenu.children', ['locationId' => $parentLocation->id, 'offset' => 0,]),
             ];
             $nodeData->state = ['opened' => true];
 
             if (!$parentData) {
-                $nodeData->children = $this->findNodes($parentLocation);
+                $nodeData->children = $this->findNodes($parentLocation, null, 0, true);
             } else {
-                $nodeData->children = $this->findNodes($parentLocation, $parentData);
+                $nodeData->children = $this->findNodes($parentLocation, $parentData, 0 , true);
             }
 
             $parentData = $nodeData;
@@ -133,29 +111,26 @@ class UITreeMenuController extends Controller
         return $response;
     }
 
-    /**
-     * @param Location $location
-     * @return Response
-     */
-    public function childrenAction(Location $location): Response
+    public function childrenAction(Location $location, int $offset = 0): Response
     {
         $response = new JsonResponse();
 
-        $children = $this->findNodes($location);
+        $children = $this->findNodes($location, null, $offset);
 
-        $response->setData($children);
+        $response->setData([
+            'children' => $children,
+            'next' => count($children) > 0 ? $this->router->generate('edgar.uitreemenu.children', [
+                'locationId' => $location->id,
+                'offset' => $offset + $this->paginationChildren,
+            ]) : false,
+        ]);
 
         return $response;
     }
 
-    /**
-     * @param Location  $location
-     * @param Node|null $node
-     * @return array|null
-     */
-    protected function findNodes(Location $location, ?Node $node = null): ?array
+    protected function findNodes(Location $location, ?Node $node = null, int $offset = 0, bool $init = false): ?array
     {
-        $children = $this->loadLocationChildren($location, 0, $this->paginationChildren);
+        $children = $this->loadLocationChildren($location, $offset, $this->paginationChildren);
         $nodes = [];
         foreach ($children as $child) {
             if ($node && $child->id == $node->id) {
@@ -170,7 +145,7 @@ class UITreeMenuController extends Controller
             $childNode->icon = 'ct-icon ct-' . $childNode->type;
             $childNode->a_attr = [
                 'href' => $this->urlRouter->generate(URLAliasRouter::URL_ALIAS_ROUTE_NAME, ['locationId' => $child->id]),
-                'children' => $this->router->generate('edgar.uitreemenu.children', ['locationId' => $child->id]),
+                'children' => $this->router->generate('edgar.uitreemenu.children', ['locationId' => $child->id, 'offset' => $offset,]),
             ];
 
             if ($this->locationService->getLocationChildCount($child)) {
@@ -189,14 +164,12 @@ class UITreeMenuController extends Controller
         return $nodes;
     }
 
-    /**
-     * @param Location $location
-     * @param int      $offset
-     * @param int      $limit
-     * @return array
-     * @throws \eZ\Publish\API\Repository\Exceptions\NotImplementedException
-     */
-    public function loadLocationChildren(Location $location, $offset = 0, $limit = 25)
+    protected function mergeNodes(array $nodes, ?array $addNodes)
+    {
+
+    }
+
+    protected function loadLocationChildren(Location $location, $offset = 0, $limit = 25)
     {
         $filters = [new Criterion\ParentLocationId($location->id)];
 
