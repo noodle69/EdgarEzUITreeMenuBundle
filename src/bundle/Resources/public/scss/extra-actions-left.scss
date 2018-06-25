@@ -195,12 +195,12 @@ $ez-color-dark: #555;
         z-index: 2;
         opacity: 1;
         transform: translate(calc(106% - 10px), 0) scaleX(1);
-        transform-origin: right center;
+        transform-origin: left center;
         transition: all .2s $ez-admin-transition;
 
         &--hidden {
             opacity: 0;
-            transform: translate(calc(-100% - 15px), 0) scaleX(0);
+            transform: translate(calc(106% - 15px), 0) scaleX(0);
         }
     }
 }
