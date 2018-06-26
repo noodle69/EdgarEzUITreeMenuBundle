@@ -4,6 +4,8 @@ namespace Edgar\EzUITreeMenuBundle\Controller;
 
 use Edgar\EzUITreeMenu\Data\Node;
 use eZ\Publish\API\Repository\ContentTypeService;
+use eZ\Publish\API\Repository\Exceptions\NotFoundException;
+use eZ\Publish\API\Repository\Exceptions\NotImplementedException;
 use eZ\Publish\API\Repository\LocationService;
 use eZ\Publish\API\Repository\SearchService;
 use eZ\Publish\API\Repository\Values\Content\Location;
@@ -40,6 +42,17 @@ class UITreeMenuController extends Controller
     /** @var array|null  */
     protected $excludeContentTypes;
 
+    /**
+     * UITreeMenuController constructor.
+     *
+     * @param LocationService    $locationService
+     * @param ContentTypeService $contentTypeService
+     * @param SearchService      $searchService
+     * @param UrlAliasRouter     $urlRouter
+     * @param RouterInterface    $router
+     * @param int                $paginationChildren
+     * @param array|null         $excludeContentTypes
+     */
     public function __construct(
         LocationService $locationService,
         ContentTypeService $contentTypeService,
@@ -58,12 +71,23 @@ class UITreeMenuController extends Controller
         $this->excludeContentTypes = $excludeContentTypes;
     }
 
+    /**
+     * @param Request $request
+     * @return Response
+     */
     public function sidebarAction(Request $request): Response
     {
         return $this->render('@EdgarEzUITreeMenu/sidebar.html.twig', [
         ]);
     }
 
+    /**
+     * @param Location $location
+     * @return Response
+     * @throws InvalidArgumentException
+     * @throws NotFoundException
+     * @throws \eZ\Publish\API\Repository\Exceptions\UnauthorizedException
+     */
     public function initAction(Location $location): Response
     {
         $response = new JsonResponse();
@@ -111,11 +135,20 @@ class UITreeMenuController extends Controller
         return $response;
     }
 
+    /**
+     * @param Location $location
+     * @param int      $offset
+     * @return Response
+     */
     public function childrenAction(Location $location, int $offset = 0): Response
     {
         $response = new JsonResponse();
 
-        $children = $this->findNodes($location, null, $offset);
+        try {
+            $children = $this->findNodes($location, null, $offset);
+        } catch (NotFoundException $e) {
+            $children = null;
+        }
 
         $response->setData([
             'children' => $children,
@@ -128,11 +161,28 @@ class UITreeMenuController extends Controller
         return $response;
     }
 
+    /**
+     * @param Location  $location
+     * @param Node|null $node
+     * @param int       $offset
+     * @param bool      $init
+     * @return array|null
+     * @throws \eZ\Publish\API\Repository\Exceptions\NotFoundException
+     */
     protected function findNodes(Location $location, ?Node $node = null, int $offset = 0, bool $init = false): ?array
     {
-        $children = $this->loadLocationChildren($location, $offset, $this->paginationChildren);
+        try {
+            $limit = $init ? $this->loadLocationChildrenCount($location) : $this->paginationChildren;
+            $children = $this->loadLocationChildren($location, $offset, $limit);
+        } catch (NotImplementedException $e) {
+            $children = [
+                'childLocations' => [],
+                'childLocationsCount' => 0,
+            ];
+        }
+
         $nodes = [];
-        foreach ($children as $child) {
+        foreach ($children['childLocations'] as $child) {
             if ($node && $child->id == $node->id) {
                 $nodes[] = $node;
                 continue;
@@ -164,12 +214,14 @@ class UITreeMenuController extends Controller
         return $nodes;
     }
 
-    protected function mergeNodes(array $nodes, ?array $addNodes)
-    {
-
-    }
-
-    protected function loadLocationChildren(Location $location, $offset = 0, $limit = 25)
+    /**
+     * @param Location $location
+     * @param int      $offset
+     * @param int      $limit
+     * @return array
+     * @throws NotImplementedException
+     */
+    protected function loadLocationChildren(Location $location, $offset = 0, $limit = 25): array
     {
         $filters = [new Criterion\ParentLocationId($location->id)];
 
@@ -200,6 +252,21 @@ class UITreeMenuController extends Controller
             $childLocations[] = $searchHit->valueObject;
         }
 
-        return $childLocations;
+        return [
+            'childLocations' => $childLocations,
+            'childLocationsCount' => $searchResult->totalCount,
+        ];
+    }
+
+    /**
+     * @param Location $location
+     * @return int
+     * @throws NotImplementedException
+     */
+    protected function loadLocationChildrenCount(Location $location): int
+    {
+        $children = $this->loadLocationChildren($location, 0, 1);
+
+        return $children['childLocationsCount'];
     }
 }
