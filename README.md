@@ -10,3 +10,5 @@
 
 [Installation](docs/INSTALL.md)
 
+[Usage](docs/USAGE.md)
+

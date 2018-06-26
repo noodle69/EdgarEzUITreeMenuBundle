@@ -198,7 +198,7 @@ class UITreeMenuController extends Controller
                 'children' => $this->router->generate('edgar.uitreemenu.children', ['locationId' => $child->id, 'offset' => $offset,]),
             ];
 
-            if ($this->locationService->getLocationChildCount($child)) {
+            if ($this->loadLocationChildrenCount($child)) {
                 $nodesTemp = new Node();
                 $nodesTemp->text = '...';
                 $childNode->children = [$nodesTemp];
