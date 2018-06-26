@@ -30,9 +30,6 @@ class UITreeMenuController extends Controller
     /** @var SearchService  */
     protected $searchService;
 
-    /** @var UrlAliasRouter */
-    private $urlRouter;
-
     /** @var RouterInterface  */
     private $router;
 
@@ -48,7 +45,6 @@ class UITreeMenuController extends Controller
      * @param LocationService    $locationService
      * @param ContentTypeService $contentTypeService
      * @param SearchService      $searchService
-     * @param UrlAliasRouter     $urlRouter
      * @param RouterInterface    $router
      * @param int                $paginationChildren
      * @param array|null         $excludeContentTypes
@@ -57,7 +53,6 @@ class UITreeMenuController extends Controller
         LocationService $locationService,
         ContentTypeService $contentTypeService,
         SearchService $searchService,
-        UrlAliasRouter $urlRouter,
         RouterInterface $router,
         int $paginationChildren,
         ?array $excludeContentTypes
@@ -65,7 +60,6 @@ class UITreeMenuController extends Controller
         $this->locationService = $locationService;
         $this->contentTypeService = $contentTypeService;
         $this->searchService = $searchService;
-        $this->urlRouter = $urlRouter;
         $this->router = $router;
         $this->paginationChildren = $paginationChildren;
         $this->excludeContentTypes = $excludeContentTypes;
@@ -114,7 +108,7 @@ class UITreeMenuController extends Controller
             $nodeData->type = $this->contentTypeService->loadContentType($parentLocation->contentInfo->contentTypeId)->identifier;
             $nodeData->icon = 'ct-icon ct-' . $nodeData->type;
             $nodeData->a_attr = [
-                'href' => $this->urlRouter->generate(URLAliasRouter::URL_ALIAS_ROUTE_NAME, ['locationId' => $parentLocation->id]),
+                'href' => $this->router->generate('_ezpublishLocation', ['locationId' => $parentLocation->id]),
                 'children' => $this->router->generate('edgar.uitreemenu.children', ['locationId' => $parentLocation->id, 'offset' => 0,]),
             ];
             $nodeData->state = ['opened' => true];
@@ -194,7 +188,7 @@ class UITreeMenuController extends Controller
             $childNode->type = $this->contentTypeService->loadContentType($child->contentInfo->contentTypeId)->identifier;
             $childNode->icon = 'ct-icon ct-' . $childNode->type;
             $childNode->a_attr = [
-                'href' => $this->urlRouter->generate(URLAliasRouter::URL_ALIAS_ROUTE_NAME, ['locationId' => $child->id]),
+                'href' => $this->router->generate('_ezpublishLocation', ['locationId' => $child->id]),
                 'children' => $this->router->generate('edgar.uitreemenu.children', ['locationId' => $child->id, 'offset' => $offset,]),
             ];
 
