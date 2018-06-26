@@ -24,7 +24,7 @@
         fetch(request)
             .then(handleRequestResponse)
             .then(function(json) {
-                if (json.children.length) {
+                if (json.children && json.children.length) {
                     $.each(json.children, function(i, node) {
                         $('#treemenu-view').jstree("create_node", par, node, 'last', false, false);
                     });
