@@ -11,7 +11,6 @@ use eZ\Publish\API\Repository\SearchService;
 use eZ\Publish\API\Repository\Values\Content\Location;
 use eZ\Publish\API\Repository\Values\Content\LocationQuery;
 use eZ\Publish\Core\Base\Exceptions\InvalidArgumentException;
-use eZ\Publish\Core\MVC\Symfony\Routing\UrlAliasRouter;
 use EzSystems\EzPlatformAdminUiBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -107,6 +106,10 @@ class UITreeMenuController extends Controller
             $nodeData->text = $parentLocation->contentInfo->name;
             $nodeData->type = $this->contentTypeService->loadContentType($parentLocation->contentInfo->contentTypeId)->identifier;
             $nodeData->icon = 'ct-icon ct-' . $nodeData->type;
+            $nodeData->li_attr = [
+                'location-visible' => !$parentLocation->invisible,
+                'location-hidden' => $parentLocation->hidden,
+            ];
             $nodeData->a_attr = [
                 'href' => $this->router->generate('_ezpublishLocation', ['locationId' => $parentLocation->id]),
                 'children' => $this->router->generate('edgar.uitreemenu.children', ['locationId' => $parentLocation->id, 'offset' => 0,]),
@@ -187,6 +190,10 @@ class UITreeMenuController extends Controller
             $childNode->text = $child->contentInfo->name;
             $childNode->type = $this->contentTypeService->loadContentType($child->contentInfo->contentTypeId)->identifier;
             $childNode->icon = 'ct-icon ct-' . $childNode->type;
+            $childNode->li_attr = [
+                'location-visible' => !$child->invisible,
+                'location-hidden' => $child->hidden,
+            ];
             $childNode->a_attr = [
                 'href' => $this->router->generate('_ezpublishLocation', ['locationId' => $child->id]),
                 'children' => $this->router->generate('edgar.uitreemenu.children', ['locationId' => $child->id, 'offset' => $offset,]),

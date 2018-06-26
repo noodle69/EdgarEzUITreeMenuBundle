@@ -444,6 +444,14 @@
 #treemenu-sidebar-widget .jstree-default > .jstree-no-dots .jstree-leaf > .jstree-ocl {
   background: transparent;
 }
+#treemenu-sidebar-widget .jstree-default > .jstree-no-dots .jstree-node[location-visible="false"] > a,
+#treemenu-sidebar-widget .jstree-default > .jstree-no-dots .jstree-leaf > .jstree-ocl[location-visible="false"] > a {
+  color: darkgray;
+}
+#treemenu-sidebar-widget .jstree-default > .jstree-no-dots .jstree-node[location-hidden="true"] > a,
+#treemenu-sidebar-widget .jstree-default > .jstree-no-dots .jstree-leaf > .jstree-ocl[location-hidden="true"] > a {
+  font-style: italic;
+}
 #treemenu-sidebar-widget .jstree-default > .jstree-no-dots .jstree-open > .jstree-ocl {
   background-position: -36px -4px;
 }

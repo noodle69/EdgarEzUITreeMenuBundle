@@ -11,6 +11,9 @@ class Node
     public $text;
 
     /** @var array */
+    public $li_attr;
+
+    /** @var array */
     public $a_attr;
 
     /** @var array */
