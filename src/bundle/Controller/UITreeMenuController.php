@@ -109,6 +109,7 @@ class UITreeMenuController extends Controller
             $nodeData->li_attr = [
                 'location-visible' => !$parentLocation->invisible,
                 'location-hidden' => $parentLocation->hidden,
+                'location-selected' => $key == 0 ? 'true' : 'false',
             ];
             $nodeData->a_attr = [
                 'href' => $this->router->generate('_ezpublishLocation', ['locationId' => $parentLocation->id]),
