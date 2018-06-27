@@ -1001,6 +1001,9 @@
 }
 #treemenu-sidebar-widget .jstree-children .jstree-last a {
   width: 86%;
+  -ms-text-overflow: ellipsis;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 #treemenu-sidebar-widget .jstree-anchor:hover {
   background-color: #e1f5ff;
