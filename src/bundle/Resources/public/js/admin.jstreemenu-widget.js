@@ -42,7 +42,7 @@
                 }
             };
 
-            actions.style.top = btn.offsetTop + 'px';
+            actions.style.top = (btn.offsetTop - 64) + 'px';
             actions.classList[methodName](CLASS_HIDDEN);
             document.body[clickOutsideMethodName]('click', detectClickLeftOutside, false);
         }, false);

@@ -109,10 +109,12 @@ class UITreeMenuController extends Controller
             $nodeData->li_attr = [
                 'location-visible' => !$parentLocation->invisible,
                 'location-hidden' => $parentLocation->hidden,
+                'location-selected' => $key == 0 ? 'true' : 'false',
             ];
             $nodeData->a_attr = [
                 'href' => $this->router->generate('_ezpublishLocation', ['locationId' => $parentLocation->id]),
                 'children' => $this->router->generate('edgar.uitreemenu.children', ['locationId' => $parentLocation->id, 'offset' => 0,]),
+                'title' => $nodeData->text,
             ];
             $nodeData->state = ['opened' => true];
 
@@ -197,6 +199,7 @@ class UITreeMenuController extends Controller
             $childNode->a_attr = [
                 'href' => $this->router->generate('_ezpublishLocation', ['locationId' => $child->id]),
                 'children' => $this->router->generate('edgar.uitreemenu.children', ['locationId' => $child->id, 'offset' => $offset,]),
+                'title' => $childNode->text,
             ];
 
             if ($this->loadLocationChildrenCount($child)) {

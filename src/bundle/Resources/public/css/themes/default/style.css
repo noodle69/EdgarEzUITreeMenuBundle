@@ -39,7 +39,7 @@
 #treemenu-sidebar-widget .jstree-anchor:hover,
 #treemenu-sidebar-widget .jstree-anchor:active {
   text-decoration: none;
-  color: #000;
+  color: #333;
 }
 #treemenu-sidebar-widget .jstree-icon {
   display: inline-block;
@@ -452,6 +452,10 @@
 #treemenu-sidebar-widget .jstree-default > .jstree-no-dots .jstree-leaf > .jstree-ocl[location-hidden="true"] > a {
   font-style: italic;
 }
+#treemenu-sidebar-widget .jstree-default > .jstree-no-dots .jstree-node[location-selected="true"] > a,
+#treemenu-sidebar-widget .jstree-default > .jstree-no-dots .jstree-leaf > .jstree-ocl[location-selected="true"] > a {
+  font-weight: bolder;
+}
 #treemenu-sidebar-widget .jstree-default > .jstree-no-dots .jstree-open > .jstree-ocl {
   background-position: -36px -4px;
 }
@@ -552,6 +556,8 @@
 #treemenu-sidebar-widget .jstree-default > .jstree-container-ul > .jstree-node {
   margin-left: 0;
   margin-right: 0;
+  padding: 0.5rem 0.25rem 1.25rem;
+  background-color: #fff;
 }
 #treemenu-sidebar-widget #jstree-dnd.jstree-default {
   line-height: 24px;
@@ -995,6 +1001,12 @@
 }
 #treemenu-sidebar-widget .jstree-children .jstree-last a {
   width: 86%;
+  -ms-text-overflow: ellipsis;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+#treemenu-sidebar-widget .jstree-anchor:hover {
+  background-color: #e1f5ff;
 }
 @media (max-width: 768px) {
   #treemenu-sidebar-widget .jstree-default-responsive {

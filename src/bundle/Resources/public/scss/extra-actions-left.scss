@@ -1,13 +1,14 @@
 @import 'custom';
 
 $ez-color-dark: #555;
+$ez-ground-dark: #fff;
 
 .ez-extra-actions-left {
     $block: '.ez-extra-actions-left';
 
     border-radius: 8px;
     border: 6px solid $ez-color-dark;
-    width: 300px;
+    width: 475px;
 
     &__action {
         display: block;
@@ -53,8 +54,10 @@ $ez-color-dark: #555;
     }
 
     &__content {
-        background: $ez-ground-base;
-        max-height: 300px;
+        background: $ez-ground-dark;
+        color: #333;
+        height: 70vh;
+        max-height: 70vh;
         overflow: auto;
     }
 
@@ -179,7 +182,7 @@ $ez-color-dark: #555;
         position: absolute;
         height: 40px;
         width: 10px;
-        top: 30px;
+        top: 92px;
         left: -24px;
         transform: translate(100%, -50%);
         z-index: 0;
@@ -194,13 +197,13 @@ $ez-color-dark: #555;
         right: 0;
         z-index: 2;
         opacity: 1;
-        transform: translate(calc(106% - 10px), 0) scaleX(1);
+        transform: translate(calc(104% - 11px), 0) scaleX(1);
         transform-origin: left center;
         transition: all .2s $ez-admin-transition;
 
         &--hidden {
             opacity: 0;
-            transform: translate(calc(106% - 15px), 0) scaleX(0);
+            transform: translate(calc(104% - 15px), 0) scaleX(0);
         }
     }
 }
