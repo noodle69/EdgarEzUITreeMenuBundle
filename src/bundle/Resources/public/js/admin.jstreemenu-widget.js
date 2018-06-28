@@ -11,8 +11,10 @@
     const stickyContainer = getClosest(btnTreeMenu, '.ez-side-menu .ez-sticky-container');
     const eZExtractActionContainerLeft = document.querySelector('#ez-extra-actions-container-left');
 
-    contentSideBar.style.zIndex = "2";
-    stickyContainer.insertBefore(eZExtractActionContainerLeft, null);
+    if (contentSideBar) {
+        contentSideBar.style.zIndex = "2";
+        stickyContainer.insertBefore(eZExtractActionContainerLeft, null);
+    }
 })(jQuery, window, document);
 
 (function () {
