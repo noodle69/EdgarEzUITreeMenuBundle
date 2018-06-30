@@ -9,6 +9,5 @@ class EdgarEzUITreeMenuBundle extends Bundle
 {
     public function build(ContainerBuilder $container)
     {
-        
     }
 }

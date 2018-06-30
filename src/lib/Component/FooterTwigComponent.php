@@ -39,6 +39,5 @@ class FooterTwigComponent implements Renderable
         } catch (\Exception $e) {
             return '';
         }
-
     }
 }

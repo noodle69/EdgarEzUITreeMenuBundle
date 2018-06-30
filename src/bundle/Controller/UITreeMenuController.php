@@ -20,22 +20,22 @@ use eZ\Publish\API\Repository\Values\Content\Query\Criterion;
 
 class UITreeMenuController extends Controller
 {
-    /** @var LocationService  */
+    /** @var LocationService */
     protected $locationService;
 
-    /** @var ContentTypeService  */
+    /** @var ContentTypeService */
     protected $contentTypeService;
 
-    /** @var SearchService  */
+    /** @var SearchService */
     protected $searchService;
 
-    /** @var RouterInterface  */
+    /** @var RouterInterface */
     private $router;
 
-    /** @var int  */
+    /** @var int */
     protected $paginationChildren;
 
-    /** @var array|null  */
+    /** @var array|null */
     protected $excludeContentTypes;
 
     /**
@@ -66,6 +66,7 @@ class UITreeMenuController extends Controller
 
     /**
      * @param Request $request
+     *
      * @return Response
      */
     public function sidebarAction(Request $request): Response
@@ -76,9 +77,12 @@ class UITreeMenuController extends Controller
 
     /**
      * @param Location $location
+     *
      * @return Response
+     *
      * @throws InvalidArgumentException
      * @throws NotFoundException
+     * @throws NotImplementedException
      * @throws \eZ\Publish\API\Repository\Exceptions\UnauthorizedException
      */
     public function initAction(Location $location): Response
@@ -113,7 +117,7 @@ class UITreeMenuController extends Controller
             ];
             $nodeData->a_attr = [
                 'href' => $this->router->generate('_ezpublishLocation', ['locationId' => $parentLocation->id]),
-                'children' => $this->router->generate('edgar.uitreemenu.children', ['locationId' => $parentLocation->id, 'offset' => 0,]),
+                'children' => $this->router->generate('edgar.uitreemenu.children', ['locationId' => $parentLocation->id, 'offset' => 0]),
                 'title' => $nodeData->text,
             ];
             $nodeData->state = ['opened' => true];
@@ -121,7 +125,7 @@ class UITreeMenuController extends Controller
             if (!$parentData) {
                 $nodeData->children = $this->findNodes($parentLocation, null, 0, true);
             } else {
-                $nodeData->children = $this->findNodes($parentLocation, $parentData, 0 , true);
+                $nodeData->children = $this->findNodes($parentLocation, $parentData, 0, true);
             }
 
             $parentData = $nodeData;
@@ -136,8 +140,11 @@ class UITreeMenuController extends Controller
 
     /**
      * @param Location $location
-     * @param int      $offset
+     * @param int $offset
+     *
      * @return Response
+     *
+     * @throws NotImplementedException
      */
     public function childrenAction(Location $location, int $offset = 0): Response
     {
@@ -161,12 +168,15 @@ class UITreeMenuController extends Controller
     }
 
     /**
-     * @param Location  $location
+     * @param Location $location
      * @param Node|null $node
-     * @param int       $offset
-     * @param bool      $init
+     * @param int $offset
+     * @param bool $init
+     *
      * @return array|null
-     * @throws \eZ\Publish\API\Repository\Exceptions\NotFoundException
+     *
+     * @throws NotFoundException
+     * @throws NotImplementedException
      */
     protected function findNodes(Location $location, ?Node $node = null, int $offset = 0, bool $init = false): ?array
     {
@@ -198,7 +208,7 @@ class UITreeMenuController extends Controller
             ];
             $childNode->a_attr = [
                 'href' => $this->router->generate('_ezpublishLocation', ['locationId' => $child->id]),
-                'children' => $this->router->generate('edgar.uitreemenu.children', ['locationId' => $child->id, 'offset' => $offset,]),
+                'children' => $this->router->generate('edgar.uitreemenu.children', ['locationId' => $child->id, 'offset' => $offset]),
                 'title' => $childNode->text,
             ];
 
@@ -210,7 +220,7 @@ class UITreeMenuController extends Controller
 
             $nodes[] = $childNode;
         }
-        
+
         return $nodes;
     }
 
@@ -218,7 +228,9 @@ class UITreeMenuController extends Controller
      * @param Location $location
      * @param int      $offset
      * @param int      $limit
+     *
      * @return array
+     *
      * @throws NotImplementedException
      */
     protected function loadLocationChildren(Location $location, $offset = 0, $limit = 25): array
@@ -260,7 +272,9 @@ class UITreeMenuController extends Controller
 
     /**
      * @param Location $location
+     *
      * @return int
+     *
      * @throws NotImplementedException
      */
     protected function loadLocationChildrenCount(Location $location): int

@@ -31,6 +31,6 @@ class EdgarEzUITreeMenuExtension extends Extension implements PrependExtensionIn
 
     public function prepend(ContainerBuilder $container)
     {
-        $container->prependExtensionConfig('assetic', array('bundles' => array('EdgarEzUITreeMenuBundle')));
+        $container->prependExtensionConfig('assetic', ['bundles' => ['EdgarEzUITreeMenuBundle']]);
     }
 }

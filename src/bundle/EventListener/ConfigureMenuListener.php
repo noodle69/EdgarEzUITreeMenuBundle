@@ -2,7 +2,6 @@
 
 namespace Edgar\EzUITreeMenuBundle\EventListener;
 
-use eZ\Publish\Core\MVC\ConfigResolverInterface;
 use EzSystems\EzPlatformAdminUi\Menu\Event\ConfigureMenuEvent;
 use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Translation\TranslationContainerInterface;
@@ -12,7 +11,7 @@ class ConfigureMenuListener implements TranslationContainerInterface
 {
     const ITEM__BROWSE_TRE = 'sidebar_left__browse_tree';
 
-    /** @var RequestStack  */
+    /** @var RequestStack */
     protected $requestStack;
 
     public function __construct(RequestStack $requestStack)

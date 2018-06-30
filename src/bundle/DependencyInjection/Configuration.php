@@ -23,6 +23,7 @@ class Configuration extends SiteAccessConfiguration
                 ->info('Exclude content from tree menu by content type')
                 ->scalarPrototype()
             ->end();
+
         return $treeBuilder;
     }
 }
