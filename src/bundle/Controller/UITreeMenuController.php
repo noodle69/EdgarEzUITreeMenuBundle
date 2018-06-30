@@ -146,7 +146,7 @@ class UITreeMenuController extends Controller
         try {
             $children = $this->findNodes($location, null, $offset);
         } catch (NotFoundException $e) {
-            $children = null;
+            $children = [];
         }
 
         $response->setData([
@@ -210,11 +210,7 @@ class UITreeMenuController extends Controller
 
             $nodes[] = $childNode;
         }
-
-        if (empty($nodes)) {
-            return null;
-        }
-
+        
         return $nodes;
     }
 
