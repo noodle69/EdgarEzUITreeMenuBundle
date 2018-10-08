@@ -31,7 +31,7 @@ class ConfigureMenuListener implements TranslationContainerInterface
             $menu->addChild(
                 self::ITEM__BROWSE_TRE,
                 [
-                    'extras' => ['icon' => 'list'],
+                    'extras' => ['icon' => 'copy-subtree'],
                     'attributes' => [
                         'class' => 'ez-btn--extra-actions-left btn--tree-browse',
                         'data-actions' => 'browse-tree',
