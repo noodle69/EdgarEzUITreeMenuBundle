@@ -9,7 +9,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 
 class ConfigureMenuListener implements TranslationContainerInterface
 {
-    const ITEM__BROWSE_TRE = 'sidebar_left__browse_tree';
+    const ITEM__BROWSE_TREE = 'sidebar_left__browse_tree';
 
     /** @var RequestStack */
     protected $requestStack;
@@ -29,7 +29,7 @@ class ConfigureMenuListener implements TranslationContainerInterface
             $menu = $event->getMenu();
 
             $menu->addChild(
-                self::ITEM__BROWSE_TRE,
+                self::ITEM__BROWSE_TREE,
                 [
                     'extras' => ['icon' => 'copy-subtree'],
                     'attributes' => [
@@ -41,12 +41,12 @@ class ConfigureMenuListener implements TranslationContainerInterface
 
             $children = $menu->getChildren();
             $order = array_keys($children);
-            $oldPosition = array_search(self::ITEM__BROWSE_TRE, $order);
+            $oldPosition = array_search(self::ITEM__BROWSE_TREE, $order);
             unset($order[$oldPosition]);
 
             $order = array_values($order);
 
-            array_splice($order, 1, 0, self::ITEM__BROWSE_TRE);
+            array_splice($order, 1, 0, self::ITEM__BROWSE_TREE);
             $menu->reorderChildren($order);
         }
     }
@@ -57,7 +57,7 @@ class ConfigureMenuListener implements TranslationContainerInterface
     public static function getTranslationMessages(): array
     {
         return [
-            (new Message(self::ITEM__BROWSE_TRE, 'messages'))->setDesc('Browse tree'),
+            (new Message(self::ITEM__BROWSE_TREE, 'messages'))->setDesc('Browse tree'),
         ];
     }
 }
