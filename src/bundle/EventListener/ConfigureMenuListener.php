@@ -6,49 +6,39 @@ use EzSystems\EzPlatformAdminUi\Menu\Event\ConfigureMenuEvent;
 use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Translation\TranslationContainerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
+use eZ\Publish\Core\MVC\ConfigResolverInterface;
 
 class ConfigureMenuListener implements TranslationContainerInterface
 {
-    const ITEM__BROWSE_TREE = 'sidebar_left__browse_tree';
-
-    /** @var RequestStack */
-    protected $requestStack;
-
-    public function __construct(RequestStack $requestStack)
-    {
-        $this->requestStack = $requestStack;
-    }
+    const ITEM__BROWSE_TRE = 'sidebar_left__browse_tree';
 
     /**
      * @param ConfigureMenuEvent $event
      */
     public function onMenuConfigure(ConfigureMenuEvent $event)
     {
-        $request = $this->requestStack->getCurrentRequest();
-        if ($request->attributes->has('locationId')) {
-            $menu = $event->getMenu();
+        $menu = $event->getMenu();
 
-            $menu->addChild(
-                self::ITEM__BROWSE_TREE,
-                [
-                    'extras' => ['icon' => 'copy-subtree'],
-                    'attributes' => [
-                        'class' => 'ez-btn--extra-actions-left btn--tree-browse',
-                        'data-actions' => 'browse-tree',
-                    ],
-                ]
-            );
+        $menu->addChild(
+            self::ITEM__BROWSE_TRE,
+            [
+                'extras' => ['icon' => 'copy-subtree'],
+                'attributes' => [
+                    'class' => 'ez-btn--extra-actions-left btn--tree-browse',
+                    'data-actions' => 'browse-tree',
+                ],
+            ]
+        );
 
-            $children = $menu->getChildren();
-            $order = array_keys($children);
-            $oldPosition = array_search(self::ITEM__BROWSE_TREE, $order);
-            unset($order[$oldPosition]);
+        $children = $menu->getChildren();
+        $order = array_keys($children);
+        $oldPosition = array_search(self::ITEM__BROWSE_TRE, $order);
+        unset($order[$oldPosition]);
 
-            $order = array_values($order);
+        $order = array_values($order);
 
-            array_splice($order, 1, 0, self::ITEM__BROWSE_TREE);
-            $menu->reorderChildren($order);
-        }
+        array_splice($order, 1, 0, self::ITEM__BROWSE_TRE);
+        $menu->reorderChildren($order);
     }
 
     /**
@@ -57,7 +47,7 @@ class ConfigureMenuListener implements TranslationContainerInterface
     public static function getTranslationMessages(): array
     {
         return [
-            (new Message(self::ITEM__BROWSE_TREE, 'messages'))->setDesc('Browse tree'),
+            (new Message(self::ITEM__BROWSE_TRE, 'messages'))->setDesc('Browse tree'),
         ];
     }
 }

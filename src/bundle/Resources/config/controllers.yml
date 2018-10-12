@@ -7,6 +7,7 @@ services:
     Edgar\EzUITreeMenuBundle\Controller\:
         resource: "../../Controller/*"
         arguments:
+            $startLocationId: '$universal_discovery_widget_module.default_location_id;ezsettings$'
             $paginationChildren: '$pagination_children;edgar_ez_ui_tree_menu$'
             $excludeContentTypes: '$exclude_content_types;edgar_ez_ui_tree_menu$'
         public: true

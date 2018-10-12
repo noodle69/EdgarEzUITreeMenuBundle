@@ -29,8 +29,8 @@ class UITreeMenuController extends Controller
     /** @var SearchService */
     protected $searchService;
 
-    /** @var RouterInterface */
-    private $router;
+    /** @var int */
+    private $startLocationId;
 
     /** @var int */
     protected $paginationChildren;
@@ -53,6 +53,7 @@ class UITreeMenuController extends Controller
         ContentTypeService $contentTypeService,
         SearchService $searchService,
         RouterInterface $router,
+        int $startLocationId,
         int $paginationChildren,
         ?array $excludeContentTypes
     ) {
@@ -60,6 +61,7 @@ class UITreeMenuController extends Controller
         $this->contentTypeService = $contentTypeService;
         $this->searchService = $searchService;
         $this->router = $router;
+        $this->startLocationId = $startLocationId;
         $this->paginationChildren = $paginationChildren;
         $this->excludeContentTypes = $excludeContentTypes;
     }
@@ -72,6 +74,7 @@ class UITreeMenuController extends Controller
     public function sidebarAction(Request $request): Response
     {
         return $this->render('@EdgarEzUITreeMenu/sidebar.html.twig', [
+            'locationId' => $this->startLocationId,
         ]);
     }
 
@@ -100,7 +103,7 @@ class UITreeMenuController extends Controller
         $parentData = null;
         $pathString = array_reverse(explode('/', trim($location->pathString, '/')));
         foreach ($pathString as $key => $locationId) {
-            if ($key == count($pathString) - 1) {
+            if (count($pathString) != 1 && $key == count($pathString) - 1) {
                 continue;
             }
 
