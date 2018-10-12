@@ -5,8 +5,6 @@ namespace Edgar\EzUITreeMenuBundle\EventListener;
 use EzSystems\EzPlatformAdminUi\Menu\Event\ConfigureMenuEvent;
 use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Translation\TranslationContainerInterface;
-use Symfony\Component\HttpFoundation\RequestStack;
-use eZ\Publish\Core\MVC\ConfigResolverInterface;
 
 class ConfigureMenuListener implements TranslationContainerInterface
 {
