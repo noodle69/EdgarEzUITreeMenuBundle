@@ -17,6 +17,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\RouterInterface;
 use eZ\Publish\API\Repository\Values\Content\Query\Criterion;
+use Symfony\Component\Translation\TranslatorInterface;
 
 class UITreeMenuController extends Controller
 {
@@ -28,6 +29,9 @@ class UITreeMenuController extends Controller
 
     /** @var SearchService */
     protected $searchService;
+
+    /** @var TranslatorInterface */
+    protected $translator;
 
     /** @var int */
     private $startLocationId;
@@ -53,14 +57,16 @@ class UITreeMenuController extends Controller
         ContentTypeService $contentTypeService,
         SearchService $searchService,
         RouterInterface $router,
+        TranslatorInterface $translator,
         int $startLocationId,
         int $paginationChildren,
-        ?array $excludeContentTypes
+        ?array $excludeContentTypes = null
     ) {
         $this->locationService = $locationService;
         $this->contentTypeService = $contentTypeService;
         $this->searchService = $searchService;
         $this->router = $router;
+        $this->translator = $translator;
         $this->startLocationId = $startLocationId;
         $this->paginationChildren = $paginationChildren;
         $this->excludeContentTypes = $excludeContentTypes;
@@ -110,7 +116,12 @@ class UITreeMenuController extends Controller
             $parentLocation = $this->locationService->loadLocation($locationId);
             $nodeData = new Node();
             $nodeData->id = $parentLocation->id;
-            $nodeData->text = $parentLocation->contentInfo->name;
+            $nodeData->text = (count($pathString) == 1 && $key == 0)
+                ? $this->translator->trans(
+                /* @Desc("Root Location") */
+                    'menu.widget.root_location', [], 'edgarezuitreemenu'
+                )
+                : $parentLocation->contentInfo->name;
             $nodeData->type = $this->contentTypeService->loadContentType($parentLocation->contentInfo->contentTypeId)->identifier;
             $nodeData->icon = 'ct-icon ct-' . $nodeData->type;
             $nodeData->li_attr = [
