@@ -85,7 +85,7 @@ class UITreeMenuController extends Controller
     }
 
     /**
-     * @param Location $location
+     * @param int $locationId
      *
      * @return Response
      *
@@ -94,9 +94,11 @@ class UITreeMenuController extends Controller
      * @throws NotImplementedException
      * @throws \eZ\Publish\API\Repository\Exceptions\UnauthorizedException
      */
-    public function initAction(Location $location): Response
+    public function initAction(int $locationId): Response
     {
         $response = new JsonResponse();
+
+        $location = $this->locationService->loadLocation($locationId);
 
         foreach ((array)$location->pathString as $pathString) {
             if (preg_match('/^(\/\w+)+\/$/', $pathString) !== 1) {
@@ -153,16 +155,18 @@ class UITreeMenuController extends Controller
     }
 
     /**
-     * @param Location $location
+     * @param int $locationId
      * @param int $offset
      *
      * @return Response
      *
      * @throws NotImplementedException
      */
-    public function childrenAction(Location $location, int $offset = 0): Response
+    public function childrenAction(int $locationId, int $offset = 0): Response
     {
         $response = new JsonResponse();
+
+        $location = $this->locationService->loadLocation($locationId);
 
         try {
             $children = $this->findNodes($location, null, $offset);
