@@ -19,7 +19,7 @@ class Node
     /** @var array */
     public $state;
 
-    /** @var array */
+    /** @var ?array */
     public $children;
 
     /** @var string */

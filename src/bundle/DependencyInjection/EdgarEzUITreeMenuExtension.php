@@ -22,11 +22,13 @@ class EdgarEzUITreeMenuExtension extends Extension implements PrependExtensionIn
         $loader->load('services.yml');
 
         $configuration = $this->getConfiguration($configs, $container);
-        $config = $this->processConfiguration($configuration, $configs);
+        if (!is_null($configuration)) {
+            $config = $this->processConfiguration($configuration, $configs);
 
-        $processor = new ConfigurationProcessor($container, 'edgar_ez_ui_tree_menu');
-        $processor->mapSetting('pagination_children', $config);
-        $processor->mapSetting('exclude_content_types', $config);
+            $processor = new ConfigurationProcessor($container, 'edgar_ez_ui_tree_menu');
+            $processor->mapSetting('pagination_children', $config);
+            $processor->mapSetting('exclude_content_types', $config);
+        }
     }
 
     public function prepend(ContainerBuilder $container)

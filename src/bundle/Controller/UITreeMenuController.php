@@ -6,6 +6,7 @@ use Edgar\EzUITreeMenu\Data\Node;
 use eZ\Publish\API\Repository\ContentTypeService;
 use eZ\Publish\API\Repository\Exceptions\NotFoundException;
 use eZ\Publish\API\Repository\Exceptions\NotImplementedException;
+use eZ\Publish\API\Repository\Exceptions\UnauthorizedException;
 use eZ\Publish\API\Repository\LocationService;
 use eZ\Publish\API\Repository\SearchService;
 use eZ\Publish\API\Repository\Values\Content\Location;
@@ -29,6 +30,9 @@ class UITreeMenuController extends Controller
 
     /** @var SearchService */
     protected $searchService;
+
+    /** @var RouterInterface */
+    protected $router;
 
     /** @var TranslatorInterface */
     protected $translator;
@@ -103,6 +107,7 @@ class UITreeMenuController extends Controller
         foreach ((array)$location->pathString as $pathString) {
             if (preg_match('/^(\/\w+)+\/$/', $pathString) !== 1) {
                 throw new InvalidArgumentException(
+                    'location',
                     "value '$location->pathString' must follow the pathString format, eg /1/2/"
                 );
             }
@@ -166,17 +171,16 @@ class UITreeMenuController extends Controller
     {
         $response = new JsonResponse();
 
-        $location = $this->locationService->loadLocation($locationId);
-
         try {
+            $location = $this->locationService->loadLocation($locationId);
             $children = $this->findNodes($location, null, $offset);
-        } catch (NotFoundException $e) {
+        } catch(UnauthorizedException|NotFoundException $e) {
             $children = [];
         }
 
         $response->setData([
             'children' => $children,
-            'next' => count($children) > 0 ? $this->router->generate('edgar.uitreemenu.children', [
+            'next' => !is_null($children) && count($children) > 0 ? $this->router->generate('edgar.uitreemenu.children', [
                 'locationId' => $location->id,
                 'offset' => $offset + $this->paginationChildren,
             ]) : false,
